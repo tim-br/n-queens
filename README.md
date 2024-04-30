@@ -17,7 +17,7 @@ You need to have Scryer Prolog installed on your machine to run this program. In
 Clone the repository or download the files to your local machine.
 Ensure your working directory contains the Prolog file move.pl (the program file containing the solver logic).
 
-#### sHow to Run
+#### How to Run
 
 Open your terminal and navigate to the directory containing your Prolog file. Start Scryer Prolog by running.
 
