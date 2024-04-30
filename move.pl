@@ -2,18 +2,12 @@
 :- use_module(library(format)).
 :- use_module(library(between)).
 :- use_module(library(ordsets)).
-max_outer_bound(5, 5).
-min_outer_bound(1, 1).
 
-/*
-  write("new x"),
-  write("\n"),
-  write(NewX),
-  write("\n"),
-  write("new y"),
-  write(NewY),
-  write("\n"),
-*/
+:-dynamic(queen_position/2).
+:-dynamic(queen_set/1).
+
+max_outer_bound(6, 6).
+min_outer_bound(1, 1).
 
 check_in_bounds(X, Y):-
   min_outer_bound(MinBoundX, MinBoundY),
@@ -22,71 +16,6 @@ check_in_bounds(X, Y):-
   Y =< MaxBoundY,
   X >= MinBoundX,
   Y >= MinBoundY. 
-
-move((X1, Y1), Res, Res) :-
-    \+ check_in_bounds(X1, Y1), 
-    !.
-
-move((X1, Y1), Res, Res3):-
-  NewX is X1 + 1,
-  NewY is Y1,
-  check_in_bounds(NewX, NewY),
-  append(Res, [(NewX, NewY)], Res2),
-  move_right((NewX, NewY), Res2, Res3).
-
-move((X1, Y1), Res, Res3):-
-  NewX is X1,
-  NewY is Y1 + 1,
-  check_in_bounds(NewX, NewY),
-  append(Res, [(NewX, NewY)], Res2),
-  move_right((NewX, NewY), Res2, Res3).
-
-move((X1, Y1), Res, Res3):-
-  NewX is X1 - 1,
-  NewY is Y1,
-  check_in_bounds(NewX, NewY),
-  append(Res, [(NewX, NewY)], Res2),
-  move_right((NewX, NewY), Res2, Res3).
-
-move((X1, Y1), Res, Res3):-
-  NewX is X1,
-  NewY is Y1 - 1,
-  check_in_bounds(NewX, NewY),
-  append(Res, [(NewX, NewY)], Res2),
-  move_right((NewX, NewY), Res2, Res3).
-
-move((X1, Y1), Res, Res3):-
-  NewX is X1 + 1,
-  NewY is Y1 + 1,
-  check_in_bounds(NewX, NewY),
-  append(Res, [(NewX, NewY)], Res2),
-  move_right((NewX, NewY), Res2, Res3).
-
-move((X1, Y1), Res, Res3):-
-  NewX is X1 + 1,
-  NewY is Y1 - 1,
-  check_in_bounds(NewX, NewY),
-  append(Res, [(NewX, NewY)], Res2),
-  move_right((NewX, NewY), Res2, Res3).
-
-move((X1, Y1), Res, Res3):-
-  NewX is X1 - 1,
-  NewY is Y1 + 1,
-  check_in_bounds(NewX, NewY),
-  append(Res, [(NewX, NewY)], Res2),
-  move_right((NewX, NewY), Res2, Res3).
-
-move((X1, Y1), Res, Res3):-
-  NewX is X1 - 1,
-  NewY is Y1 - 1,
-  check_in_bounds(NewX, NewY),
-  append(Res, [(NewX, NewY)], Res2),
-  move_right((NewX, NewY), Res2, Res3).
-
-move((X1, Y1), Res, Res):-
-  NewX is X1 + 1,
-  NewY is Y1,
-  \+ check_in_bounds(NewX, NewY).
 
 move_right((X1, Y1), Res, Res) :-
     \+ check_in_bounds(X1, Y1), 
@@ -225,7 +154,7 @@ move_diag_left_up((X1, Y1), Res, Res3):-
   NewY is Y1 + 1,
   check_in_bounds(NewX, NewY),
   Res2 = [(NewX, NewY) | Res],
-  move_diag_left((NewX, NewY), Res2, Res3).
+  move_diag_left_up((NewX, NewY), Res2, Res3).
 
 move_diag_left_up((X1, Y1), Res, Res):-
   % check_in_bounds(X1, Y1),
@@ -250,222 +179,70 @@ all_moves(Coord, Moves):-
   append(Temp5, Moves7, Temp6),
   append(Temp6, Moves8, Moves).
 
-/*search_pred((X, Y), IllegalMoves, Res1):-
-  write("search pred 1\n"),
-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX > MaxX, 
-  NewY is Y - 1,
-  search_pred((1, NewY), IllegalMoves, Res1).
-
-search_pred((X, Y), IllegalMoves, Res1):-
-  write("search pred 2\n"),
-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX =< MaxX, 
-  NewY is Y,
-  check_in_bounds(NewX, NewY),
-  member((NewX, NewY), IllegalMoves),
-  search_pred((NewX, NewY), IllegalMoves, Res1).
-
-search_pred((X, Y), IllegalMoves, Res2):-
-  write("search pred 3\n"),
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX =< MaxX, 
-  NewY is Y,
-  check_in_bounds(NewX, NewY),
-  \+ member((NewX, NewY), IllegalMoves),
-  %ReturnRes = [(NewX, NewY) | Res1],
-  all_moves((NewX, NewY), NewIllegalMoves),
-  Res2 = (NewX, NewY),
-  append(IllegalMoves, NewIllegalMoves, ReturnIllegalMoves),
-  search_pred((NewX, NewY), ReturnIllegalMoves, Res2).*/
-
-/*search_pred((X, Y), IllegalMoves, Res1, Res2):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX =< MaxX, 
-  NewY is Y,
-  member((NewX, NewY), IllegalMoves),
-  search_pred((NewX, NewY), IllegalMoves, Res1, Res2).*/
-
-search_row(Y, IllegalMoves, Res):-
-  max_outer_bound(MaxX, _),
-  between(1, MaxX, X),
+available_positions((X, Y), QueensAcc, IllegalMoves):-
+  max_outer_bound(MaxX, MaxY),
+  min_outer_bound(MinX, MinY),
+  between(MinX, MaxX, X),
+  between(MinY, MaxY, Y),
   \+ member((X, Y), IllegalMoves),
-  %%all_moves(X, Y, IllegalMoves2),
-  %%append(IllegalMoves, IllegalMoves2, NewIllegalMoves), 
-  Res = (X, Y).
+  \+ member((X, Y), QueensAcc).
 
-search_pred((X, Y), _, _, _):-
-  max_outer_bound(MaxX, _),
-  min_outer_bound(_, MinY),
-  X > MaxX,
-  Y < MinY,
-  !.
-
-search_pred((X, Y), IllegalMoves, Res):-
-  write("search pred 1 X\n"),
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX > MaxX,
-  write("X is greater move to next row\n"),
-  NewY is Y - 1,
-  search_pred((0, NewY), IllegalMoves, Res).
-
-search_pred((X, Y), IllegalMoves, Res):-
-  %write("search pred 1 X\n"),
-  NewX is X + 1,
-  NewY is Y,
-  max_outer_bound(MaxX, _),
-  NewX =< MaxX,
-  member((NewX, NewY), IllegalMoves),
-  write("CALLS AGINT!!\n"),
-  write("New X 1\n"),
-  write(NewX),
-  write("New Y 1\n"),
-  write(NewY),
-  search_pred((NewX, NewY), IllegalMoves, Res).
-
-search_pred((X, Y), IllegalMoves, Res):-
-  NewX is X + 1,
-  NewY is Y,
-  max_outer_bound(MaxX, _),
-  NewX =< MaxX,
-  \+ member((NewX, NewY), IllegalMoves),
-  write("New X foo\n"),
-  write(NewX),
-  write("New Y foo\n"),
-  write(NewY),
-  Res = (NewX, NewY),
-  search_pred((NewX, NewY), IllegalMoves, Res).
-
-/*search((X,Y), Res):-
-  all_moves((X, Y), IllegalMoves),
-
-  search_pred((1, 3), [(X, Y)| IllegalMoves], Res).*/
-
-search((X,Y), Res2):-
+search((X,Y), Queens):-
   all_moves((X, Y), IllegalMoves),
   max_outer_bound(_, MaxY),
   %min_outer_bound(_, MinY),
   between(1, MaxY, Row),
   search_row(Row, [(X,Y) | IllegalMoves], Res),
-  Res2 = [(X, Y) | [Res]].
+  Res2 = [Res | Queens],
+  NewX = X + 1,
+  search((NewX, Y), Res2).
 
-next_move((X, Y), IllegalMoves, _):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX >= MaxX,
-  NewY is Y - 1,
-  min_outer_bound(_, MinY),
-  NewY =< MinY,
-  fail.
+all_in_list([], _).
+all_in_list([H|T], List2) :-
+    member(H, List2),
+    all_in_list(T, List2).
 
-next_move((X, Y), IllegalMoves, Move):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX =< MaxX,
-  Move = (NewX, Y).
+% Predicate to check set equality by mutual inclusion
+set_equal(Set1, Set2) :-
+    all_in_list(Set1, Set2),
+    all_in_list(Set2, Set1).
 
-next_move((X, Y), IllegalMoves, Move):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX > MaxX,
-  NewY is Y - 1,
-  min_outer_bound(_, MinY),
-  NewY >= MinY,
-  Move = (1, NewY).
+all_lists_unique([]).
+all_lists_unique([Head|Tail]) :-
+    not(member(Head, Tail)),
+    all_lists_unique(Tail).
 
-next_legal_move((X, Y), _, _):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX >= MaxX,
-  NewY is Y - 1,
-  min_outer_bound(_, MinY),
-  NewY =< MinY,
-  fail.
+queen_position_memo(X,Y) :-
+    (    queen_position(X,Y) -> true
+    ;    (assertz(queen_position(X,Y)), false)
+    ).
 
-next_legal_move((X, Y), IllegalMoves, Move):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX =< MaxX,
-  member((NewX, Y), IllegalMoves),
-  next_legal_move((NewX, Y), IllegalMoves, Move).
+queen_set_memo(Set) :-
+    (    sort(Set, Sorted1), queen_set(Sorted1) -> true
+    ;    (sort(Set, Sorted1), assertz(queen_set(Sorted1)), false)
+    ).
 
-next_legal_move((X, Y), IllegalMoves, Move):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX =< MaxX,
-  \+ member((NewX, Y), IllegalMoves),
-  Move = (NewX, Y).
+nsearch_((X, Y), IllegalMoves, Queens, Queens):-
+  \+ available_positions((X, Y), Queens, IllegalMoves),
+  \+ queen_set_memo(Queens),
+  retractall(queen_position(_, _)).
+  
+nsearch_((X, Y), IllegalMoves, QueensAcc, QueensRes):-
+  all_moves((X, Y), ZIllegalMoves),
+  ord_union(IllegalMoves, ZIllegalMoves, NextIllegalMoves),
+  available_positions(NextMove, QueensAcc, NextIllegalMoves),
+  NextQueens = [NextMove | QueensAcc],
+  NNextIllegal = [NextMove | NextIllegalMoves],
+  nsearch_(NextMove, NNextIllegal, NextQueens, QueensRes).
 
-next_legal_move((X, Y), IllegalMoves, Move):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX > MaxX,
-  NewY is Y - 1,
-  min_outer_bound(_, MinY),
-  NewY >= MinY,
-  member((1, NewY), IllegalMoves),
-  next_legal_move((1, NewY), IllegalMoves, Move).
-
-next_legal_move((X, Y), IllegalMoves, Move):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX > MaxX,
-  NewY is Y - 1,
-  min_outer_bound(_, MinY),
-  NewY >= MinY,
-  \+ member((1, NewY), IllegalMoves),
-  Move = (1, NewY).
-
-/*next_legal_move((X, Y), IllegalMoves, NextMove):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX > MaxX,
-  NewY is Y - 1,
-  next_legal_move((0, NewY), IllegalMoves, NextMove).
-
-next_legal_move((X, Y), IllegalMoves, NextMove):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX =< MaxX,
-  \+ member((NewX, Y), IllegalMoves),
-  NextMove = (NewX, Y).
-
-next_legal_move((X, Y), IllegalMoves, NextMove):-
-  NewX is X + 1,
-  max_outer_bound(MaxX, _),
-  NewX =< MaxX,
-  member((NewX, Y), IllegalMoves),
-  next_legal_move((NewX, Y), IllegalMoves, NextMove).*/
-
-my_search(Move, IllegalMoves, Move) :-
-    % Check that no next move is possible.
-   \+ next_legal_move(Move, IllegalMoves, _).
-
-my_search((X, Y), IllegalMoves, Move):-
-  all_moves((X, Y), IllegalMovesX),
-  IllegalMovesN = [(X, Y) | IllegalMovesX],
-  write(IllegalMovesN),
-  ord_union(IllegalMoves, IllegalMovesN, NewIllegalMoves),
-  next_legal_move((X, Y), NewIllegalMoves, NextMove),
-  (   Move = NextMove  % Return this move and attempt to find more
-  ;   my_search(NextMove, NewIllegalMoves, Move)
-  ).
-
-
-final_legal_move(Move, Move) :-
-    % Check that no next move is possible.
-    \+ next_legal_move(Move, [], _).
-
-final_legal_move((X, Y), FinalMove):-
-  next_legal_move((X, Y), [], NextMove),
-  final_legal_move(NextMove, FinalMove).
+nsearch(Queens):-
+  max_outer_bound(MaxX, MaxY),
+  min_outer_bound(MinX, MinY),
+  between(MinX, MaxX, X),
+  between(MinY, MaxY, Y),
+  nsearch_((X, Y), [(X, Y)], [(X, Y)], Queens),
+  length(Queens, Len),
+  Len >= MaxX.
 
 write_square_and_traverse_wrapper(X, Y, QueenCoords):-
   format("~s", ["#\n\n"]),
@@ -507,10 +284,3 @@ write_square_and_traverse(X,Y, QueenCoords):-
   format("~s ", ["β"]),
   NewX is X + 1,
   write_square_and_traverse(NewX, Y, QueenCoords).
-
-
-app([], Res, Res).
-
-app([X | Y], Res, Res3):-
-  NewRes = [X | Res],
-  app(Y, NewRes, Res3).
