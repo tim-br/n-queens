@@ -11,7 +11,7 @@ This Prolog program utilizes a backtracking algorithm to find solutions for boar
 
 #### Prerequisites
 
-You need to have Scryer Prolog installed on your machine to run this program. Installation instructions for Scryer Prolog can be found here.
+You need to have Scryer Prolog installed on your machine to run this program. Installation instructions for Scryer Prolog can be found here https://github.com/mthom/scryer-prolog.
 
 #### Setup
 
