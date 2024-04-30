@@ -20,7 +20,7 @@ Ensure your working directory contains the Prolog file move.pl (the program file
 
 #### How to Run
 
-Open your terminal and navigate to the directory containing your Prolog file. Start Scryer Prolog by running.
+Open your terminal and navigate to the directory containing your Prolog file. Start the Scryer Prolog environment.
 
 Once Scryer Prolog is running, perform the following steps:
 
