@@ -2,6 +2,7 @@
 
 This README provides information on running the N-Queens solver in Prolog. The program is can currently solve the problem for chessboards up to 6x6 dimensions.
 
+
 #### Description
 
 The N-Queens problem is a classic puzzle where the objective is to place N queens on an N×N chessboard so that no two queens threaten each other. This means no two queens can share the same row, column, or diagonal.
@@ -51,9 +52,15 @@ The output is a visual representation of the chessboard with 'β' indicating the
 
 https://asciinema.org/a/b0YimrR8IbYlh2qw9RDrzxwtd
 
-#### Note
+#### Current Limitations and Future Plans
 
 The program currently supports chessboards up to 6x6 dimensions. Attempting to solve for larger sizes may not produce results due to the limited scope of the implementation.
+
+The current implementation is inefficient and verbose. I aim to optimize the codebase and reduce line count significantly.
+
+I also plan to introduce more implementations in a diverse group of languages.
+
+#### Note
 
 The solution displayed is one of the possible solutions. Different runs may produce the same or different solutions due to the nature of the backtracking algorithm.
 
